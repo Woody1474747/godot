@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+from misc.utility.scons_hints import *
+
+Import("env")
+
+import platform_uwp_builders
+
+# UWP builds currently share the Windows build logic. Clone the environment
+# so that any tweaks we add in the future stay isolated from the desktop
+# configuration when both targets are built in the same invocation.
+env_uwp = env.Clone()
+
+# Reuse the mature Windows build pipeline for now. This keeps the new
+# target lean while we focus on customising the toolchain in detect.py.
+SConscript("../windows/SCsub", exports={"env": env_uwp})
