@@ -26,6 +26,7 @@ jobs:
         include:
           - name: Editor (target=editor)
             cache-name: windows-editor
+            platform: windows
             target: editor
             scons-flags: >-
               windows_subsystem=console
@@ -36,6 +37,7 @@ jobs:
 
           - name: Editor w/ clang-cl (target=editor, use_llvm=yes)
             cache-name: windows-editor-clang
+            platform: windows
             target: editor
             scons-flags: >-
               windows_subsystem=console
@@ -45,17 +47,28 @@ jobs:
 
           - name: Template (target=template_release)
             cache-name: windows-template
+            platform: windows
             target: template_release
             bin: ./bin/godot.windows.template_release.x86_64.console.exe
             compiler: msvc
 
           - name: Template w/ GCC (target=template_release, use_mingw=yes)
             cache-name: windows-template-gcc
+            platform: windows
             # MinGW takes MUCH longer to compile; save time by only targeting Template.
             target: template_release
             scons-flags: use_mingw=yes
             bin: ./bin/godot.windows.template_release.x86_64.console.exe
             compiler: gcc
+
+          - name: Template UWP (target=template_release)
+            cache-name: uwp-template
+            platform: uwp
+            target: template_release
+            scons-flags: >-
+              uwp_enable_cppwinrt=yes
+            bin: ./bin/godot.uwp.template_release.x86_64.exe
+            compiler: msvc
 
     steps:
       - name: Checkout
@@ -101,7 +114,7 @@ jobs:
         uses: ./.github/actions/godot-build
         with:
           scons-flags: ${{ env.SCONS_FLAGS }} ${{ matrix.scons-flags }}
-          platform: windows
+          platform: ${{ matrix.platform }}
           target: ${{ matrix.target }}
 
       - name: Save Godot build cache

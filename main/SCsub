@@ -36,5 +36,11 @@ env_main.CommandNoCache(
     env.Run(main_builders.make_app_icon),
 )
 
+env_main.CommandNoCache(
+    "#main/app_icon_uwp.gen.h",
+    "#main/app_icon.png",
+    env.Run(main_builders.make_app_icon_uwp),
+)
+
 lib = env_main.add_library("main", env.main_sources)
 env.Prepend(LIBS=[lib])
